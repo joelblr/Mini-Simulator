@@ -1,11 +1,22 @@
 package calci.mode_5;
 
+import calci.*;
+import errors.*;
 import design.*;
 import java.util.*;
+import calci.transformo.*;
+
 
 public class Matrix {
 
-	final Scanner scan = new Scanner(System.in);
+	static HashMap<String, String> subMap = new HashMap<String, String>();
+
+	static {
+		subMap.put("0", "₀");subMap.put("1", "₁");subMap.put("2", "₂");subMap.put("3", "₃");
+		subMap.put("4", "₄");subMap.put("5", "₅");subMap.put("6", "₆");subMap.put("7", "₇");
+		subMap.put("8", "₈");subMap.put("9", "₉");subMap.put("10", "₁₀");
+	}
+
 
 	/*Augmented Matrix, Solution Matrix*/
 	double A[][];
@@ -19,28 +30,62 @@ public class Matrix {
 	public void getMatirx() {
 
 		List<String> stdin = 
-				Design.printBox(
-						"ENTER NUMBER OF UNKNOWNS: $",
-						"ENTER NUMBER OF LINEAR EQUATIONS: $"
-					);
-
+			Design.printBox(0,
+				new DLabel("", "<top>", ""),
+				new DLabel("Dimensions of SOLE", "<tag>", "Y"),
+				new DLabel("ENTER NUMBER OF UNKNOWNS:  ", "<input>", "C W: "),
+				new DLabel("ENTER NUMBER OF LINEAR EQUATIONS:  ", "<input>", "C W: "),
+				new DLabel("", "<base>", "")
+			);
 		cols = Integer.parseInt(stdin.get(0).trim()) + 1;
 		rows = Integer.parseInt(stdin.get(1).trim());
 
-		String[] lines = new String[rows+2];
-		lines[0] = "ENTER VALUES OF "+cols+" COEFFs OF "+rows+" LINEAR EQUATIONS T";
-		lines[1] = "";
-		for (int i = 1; i <= rows; i++)
-			lines[i+1] = "Line "+i+": $";
+		if (!(0 < cols && cols < 11)) {
+			throw new LimitExceededException("<LIMITS EXCEEDED!>\n0 < No. of Unknowns < 10");
+		}if (!(0 < rows && rows < 10)) {
+			throw new LimitExceededException("<LIMITS EXCEEDED!>\n0 < No. Linear Eqns < 10");
+		}
 
-		stdin = Design.printBox(lines);
+		String l0 = "", l1 = "", row;
+		for (int i = 1; i < cols; i++) {
+			String alpha = (char)(64+i)+"";
+			l0 += alpha + "x" + subMap.get(i+"") + " ";
+			l1 += alpha + ", ";
+
+		}l0 = Design.joinWith(" + ", l0.split(" ")) + " = Y";
+		l1 += "Y";
+
+		row = "ENTER VALUES OF "+cols+" COEFFs FOR "+rows+" LINEAR EQUATIONS: "+l1;
+		Design.printBox(70, new DLabel("", "<top>", ""),
+			new DLabel(l0, "<tag>", "Y"),
+			new DLabel(row, "", "C W: "+"R P, ".repeat(cols)),
+			new DLabel("", "<joint>", "")
+		);
+
+		LinkedList<DLabel> eqns = new LinkedList<DLabel>();
+		for (int i = 1; i <= rows; i++) {
+			row = "Eqn "+i+": ";
+			eqns.add(new DLabel(row, "<input>", "C W:"));
+
+		}eqns.add(new DLabel("", "<base>", ""));
+		stdin = Design.printBox(70, eqns.toArray(new DLabel[0]));
+
 
 		A = new double[rows][cols];
 
 		for (int i = 0; i < rows; i++) {
-			String[] lineI = stdin.get(i).split(" ");
-			for (int j = 0; j < cols; j++)
-				A[i][j] = Double.parseDouble(lineI[j]);
+			String[] lineI = stdin.get(i).split(",");
+			if(lineI.length != cols)
+				throw new InputsFreqException(
+						String.format("<DIMENSION ERROR!>\nExpected %d Nums, but got %d", cols, lineI.length));
+			for (int j = 0; j < cols; j++) {
+				try {
+					A[i][j] = Double.parseDouble(lineI[j]);
+
+				}catch (NumberFormatException e) {
+					A[i][j] = Computo.solveScientific(lineI[j]);
+				}
+			}
 		}
 
 	}
@@ -71,32 +116,54 @@ public class Matrix {
 
 	private void displaySolution() {
 
-		String[] ans = new String[cols-1];
+		int p = Setup.getPrecision();
+		boolean isFrac = Setup.getNumberType();
+		LinkedList<DLabel> labels = new LinkedList<DLabel>();
+		String ans = "";
 
-		if (0 < rank && rank < cols-1) {
+		if (0 < rank && rank < cols-1) {//Infinity
 
 			for (int i = 0; i < cols-1; i++) {
 				String row = "";
 				for (int k = 0; k < cols-rank-1; k++) {
 					if (V[i][k] == 0.0)		continue;
-					row += String.format("(%.2f)%s + ", V[i][k], "k"+(k+1));
+					if (isFrac)//Fraction
+					row += String.format("(%s)%s + ", Fractions.toFractions(V[i][k]), "k"+subMap.get(k+1+""));
+					else//Decimal
+					row += String.format("(%."+p+"f)%s + ", V[i][k], "k"+subMap.get(k+1+""));
 
-				}if (V[i][cols-rank-1] != 0.0)
-					row += String.format("%.2f", V[i][cols-rank-1]);
+				}if (V[i][cols-rank-1] != 0.0) {//constant
+					int k = cols-rank-1;
+					if (isFrac)//Fraction
+					row += String.format("(%s)", Fractions.toFractions(V[i][k]));
+					else//Decimal
+					row += String.format("(%."+p+"f)", V[i][k]);
+				}
 
-				ans[i] = String.format("%s  =  %s T", "x"+(i+1), row);
+				ans = String.format("%s  =  %s", "x"+subMap.get(i+1+""), row);
+				labels.add(new DLabel(ans, "", "R W= G"));
 			}
 
-		}else if (rank == cols-1) {
-			for (int i = 1; i < cols; i++)
-				ans[i-1] = String.format("x%d = %8.2f T", i, U[i-1]);
+		}else if (rank == cols-1) {//Unique
+			for (int i = 1; i < cols; i++) {
+				if (isFrac)//Fraction
+					ans = String.format("x%s = %s", subMap.get(i+""), Fractions.toFractions(U[i-1]));
+				else//Decimal
+					ans = String.format("x%s = %8."+p+"f", subMap.get(i+""), U[i-1]);
+				labels.add(new DLabel(ans, "", "R W= G"));
+			}
 
-		}else {
-			for (int i = 1; i < cols; i++)
-				ans[i-1] = String.format("x%d = %s T", i, W[i-1]);
+		}else {//NULL
+			for (int i = 1; i < cols; i++) {
+				ans = String.format("x%d = %s", i, W[i-1]);
+				labels.add(new DLabel(ans, "", "R W= G"));
+			}
 		}
 
-		Design.printBox(ans);
+		labels.addFirst(new DLabel("Solutions", "<tag>", "Y"));
+		labels.addFirst(new DLabel("", "<top>", ""));
+		labels.add(new DLabel("", "<base>", ""));
+		Design.printBox(0, labels.toArray(new DLabel[0]));
 
 	}
 
@@ -221,8 +288,12 @@ public class Matrix {
 			/*No Solution*/
 			W = new String[cols-1];
 			for (int i = cols-2; i >= 0; i--)
-				W[i] = "ϕ";
+				W[i] = "∅";//ϕ
 		}
+
+	}
+	public static void main(String[] args) {
+		
 
 	}
 
