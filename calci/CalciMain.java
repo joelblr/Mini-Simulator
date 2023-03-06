@@ -27,7 +27,7 @@ public class CalciMain {
 //				new DLabel(" *3*  Statistics", "", "R"),
 //				new DLabel(" *4*  Base-N Mode", "", "C"),
 				new DLabel(" *5*  Equation Mode", "", "C"),
-				new DLabel(" *6*  Programming", "", "R"),
+//				new DLabel(" *6*  Programming", "", "R"),
 //				new DLabel(" *7*  Table Mode", "", "R"),
 //				new DLabel(" *8*  Vector Mode", "", "R"),
 				new DLabel(" *9*  Setup Mode", "", "C"),
@@ -92,9 +92,9 @@ public class CalciMain {
 						EqnMain.run();
 						break;
 
-					case 6 :
-						BoolMain.run();
-						break;
+//					case 6 :
+//						BoolMain.run();
+//						break;
 
 					case 9 :
 						Setup.showSetup();
