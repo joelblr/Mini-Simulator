@@ -4,6 +4,7 @@ import calci.*;
 import errors.*;
 import design.*;
 import java.util.*;
+import calci.transformo.*;
 
 
 /**
@@ -31,16 +32,16 @@ public class CompMain {
 
 	}
 
-	private static String showDisplay(String tag) {
-		List<String> stdin = 
-			Design.printBox(50,
-				new DLabel("", "<top>", ""),
-				new DLabel(tag, "<tag>", "Y"),
-				new DLabel("", "<input>", "C"),
-				new DLabel("", "<base>", "")
-		);
-		return stdin.get(0);
-	}
+//	private static String showDisplay(String tag) {
+//		List<String> stdin = 
+//			Design.printBox(50,
+//				new DLabel("", "<top>", ""),
+//				new DLabel(tag, "<tag>", "Y"),
+//				new DLabel("", "<input>", "C"),
+//				new DLabel("", "<base>", "")
+//		);
+//		return stdin.get(0);
+//	}
 
 	private static void showResult() {
 		Design.printBox(0,
@@ -68,7 +69,7 @@ public class CompMain {
 			Design.cursorGoto(0, 5, 0, 0, 0);
 			showResult();
 			Design.cursorGoto(9, 0, 0, 0, 0);
-			String stdin = showDisplay("Enter Scientific Expression").trim().toLowerCase();
+			String stdin = CalciMain.showDisplay("Enter Boolean Expression").trim().toLowerCase();
 
 			try {
 
@@ -78,14 +79,23 @@ public class CompMain {
 						return;
 
 					case "sm" :
-						CalciMain.showSetup();
+						Setup.showSetup();
 						break;
 
 					default:
-						double ans = Computo.solve(stdin);
-						result = String.format("%.4f", ans);
+						double ans = Computo.solveScientific(stdin);
+
+						result = (Setup.getNumberType()) ? Fractions.toFractions(ans) :
+								String.format("%."+ Setup.getPrecision() +"f", ans);
+
 						showResult();
 				}
+
+			}catch (NullPointerException e) {
+				e.printStackTrace();
+				Design.errorMsg = "<!>\nOops!";
+//				Design.loadingProcess(600);
+				Design.errorFlag = true;
 
 			}catch (EmptyStackException e) {
 				e.printStackTrace();
@@ -97,7 +107,7 @@ public class CompMain {
 //				Design.loadingProcess(600);
 				Design.errorFlag = true;
 
-			}catch (InvalidFunctionException e) {
+			}catch (BadFunctionException e) {
 				e.printStackTrace();
 //				Design.loadingProcess(600);
 				Design.errorFlag = true;
@@ -125,5 +135,13 @@ public class CompMain {
 
 		}
 
+	}
+
+	public static void main(String[] args) {
+		CompMain.run();
+		System.out.println(new Fractions(1, 2).toString());
+		System.out.println( Fractions.toFractions(1.33));
+		System.out.println( Fractions.toFractions(1.67));
+		System.out.println( Fractions.toFractions(0.167));
 	}
 }
