@@ -6,14 +6,14 @@ public class QuadraticException extends RuntimeException {
 	private static final long serialVersionUID = 4L;
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with no detail message.
+	* Constructs a {@code QuadraticException} with no detail message.
 	*/
 	public QuadraticException() {
 		super();
 	}
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with the specified
+	* Constructs a {@code QuadraticException} with the specified
 	* detail message.
 	*
 	* @param   s   the detail message.

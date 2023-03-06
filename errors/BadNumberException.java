@@ -6,14 +6,14 @@ public class BadNumberException extends RuntimeException {
 	private static final long serialVersionUID = 3L;
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with no detail message.
+	* Constructs a {@code BadNumberException} with no detail message.
 	*/
 	public BadNumberException() {
 		super();
 	}
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with the specified
+	* Constructs a {@code BadNumberException} with the specified
 	* detail message.
 	*
 	* @param   s   the detail message.

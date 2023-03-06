@@ -6,14 +6,14 @@ public class InvalidOperatorException extends RuntimeException {
 	private static final long serialVersionUID = 2L;
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with no detail message.
+	* Constructs a {@code InvalidOperatorException} with no detail message.
 	*/
 	public InvalidOperatorException() {
 		super();
 	}
 
 	/**
-	* Constructs a {@code InvalidFunctionException} with the specified
+	* Constructs a {@code InvalidOperatorException} with the specified
 	* detail message.
 	*
 	* @param   s   the detail message.
