@@ -1,7 +1,11 @@
 
 import design.*;
-import calci.CalciMain;
 import java.util.*;
+
+import calci.CalciMain;
+import banking.BankMain;
+import bescom.BescomMain;
+
 
 public class SuperMain {
 
@@ -15,8 +19,8 @@ public class SuperMain {
 					new DLabel("", "<joint>", ""),
 					new DLabel(" *1*  Casio fx-707", "", "C"),
 					new DLabel(" *2*  Celonis", "", "R"),
-					new DLabel(" *3*  BESCOM", "", "R"),
-					new DLabel(" *4*  Cash Ware", "", "R"),
+					new DLabel(" *3*  BESCOM", "", "C"),
+					new DLabel(" *4*  Cash Ware", "", "C"),
 					new DLabel(" *0*  Close Program Simulator", "", "C"),
 					new DLabel("", "<joint>", ""),
 					new DLabel("Enter Choice:  ", "<input>", "P"),
@@ -55,13 +59,13 @@ public class SuperMain {
 //						EmployeeMain.run();
 //						break;
 //
-//					case 3 :
-//						BescomMain.run();
-//						break;
+					case 3 :
+						BescomMain.run();
+						break;
 //
-//					case 4 :
-//						BankMain.run();
-//						break;
+					case 4 :
+						BankMain.run();
+						break;
 
 
 					case 0 :
