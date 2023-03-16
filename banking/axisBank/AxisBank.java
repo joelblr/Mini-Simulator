@@ -42,7 +42,7 @@ public class AxisBank implements Bank {
 
 	}public void setPhNo(String phno) {
 		try {
-			Integer.parseInt(phno);
+			Long.parseLong(phno);///use regex
 		}catch (NumberFormatException e) {
 			throw new BadPhoneNumberException("<BAD PHONE NUMBER!>\nValid 10 Digit Number Plz.");
 		}
