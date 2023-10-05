@@ -1,4 +1,4 @@
-# Java-Program-Simulator
+# Mini-Simulator
 Java Mini Project &lt;Program Simulator>
 ![Screenshot from 2023-03-18 14-12-30](https://user-images.githubusercontent.com/95953794/226096009-289b3bf0-6e11-4cfd-b06d-da1c92964408.png)
 ![Screenshot from 2023-03-18 14-13-44](https://user-images.githubusercontent.com/95953794/226096010-b7336ffe-7259-4c35-8bea-5231479df338.png)
